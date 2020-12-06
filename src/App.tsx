@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {AppBar, Box, TextField, Typography} from "@material-ui/core";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+    return (
+        <Box height="100vh">
+            <AppBar position="static">
+                <Box
+                    m={1}
+                >
+                    <Typography variant="h5">
+                        Barcode Scanner
+                    </Typography>
+                </Box>
+            </AppBar>
+            <Box
+                display="grid"
+                gridTemplateRows="1fr 1fr"
+                gridGap={10}
+                justifyContent="center"
+                alignContent="center"
+                height="100%"
+                p={2}
+            >
+                <Box
+                    width="80vmin"
+                    height="80vmin"
+                    border="2px solid black"
+                    borderRadius={5}
+                >
+                    <video id="scannerVideo" width="100%" height="100%"/>
+                </Box>
+                <Box>
+                    <Typography variant="body1">Barcode</Typography>
+                    <TextField variant="outlined" fullWidth/>
+                </Box>
+            </Box>
+        </Box>
+    );
 }
-
-export default App;
