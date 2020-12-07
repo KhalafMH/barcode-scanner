@@ -1,40 +1,49 @@
 import React, {useEffect, useState} from "react";
-import {AppBar, Box, TextField, Typography} from "@material-ui/core";
+import {AppBar, Box, TextField, Typography, Select, MenuItem, InputLabel, Toolbar} from "@material-ui/core";
 import {BrowserMultiFormatReader} from "@zxing/library";
 import _ from "lodash";
 
 
 export default function App() {
     const [barcode, setBarcode] = useState("");
+    const [videoDevices, setVideoDevices] = useState<Array<MediaDeviceInfo>>([]);
+    const [selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string | null>(null);
 
     useEffect(() => {
         const barcodeReader = new BrowserMultiFormatReader();
-        barcodeReader.listVideoInputDevices()
-            .then(videoDevices => {
-                if (videoDevices.length < 1) {
-                    alert("No camera detected")
-                    return
-                }
-                barcodeReader.decodeFromVideoDevice(
-                    videoDevices[videoDevices.length - 1].deviceId,
-                    "scannerVideo",
-                    result => {
-                        const isBarcodeNew = result
-                            && !_.isEmpty(result.getText().trim())
-                            && result.getText() !== barcode;
-                        if (isBarcodeNew) {
-                            new Audio("assets/barcode-scanner.mp3").play()
-                                .then(() => {
-                                    setBarcode(result.getText());
-                                });
-                        }
+        if (videoDevices.length < 1) {
+            barcodeReader.listVideoInputDevices()
+                .then(videoDevices => {
+                    if (videoDevices.length < 1) {
+                        alert("No camera detected")
+                        return
                     }
-                );
-            })
-            .catch(reason => {
-                console.log(`error: ${reason}`);
-                alert(`error: ${reason}`);
-            });
+                    setVideoDevices(videoDevices);
+                    setSelectedVideoDeviceId(videoDevices[videoDevices.length - 1].deviceId)
+                })
+                .catch(reason => {
+                    console.log(`error: ${reason}`);
+                    alert(`error: ${reason}`);
+                });
+        }
+        if (selectedVideoDeviceId) {
+            barcodeReader.decodeFromVideoDevice(
+                selectedVideoDeviceId,
+                "scannerVideo",
+                result => {
+                    const isBarcodeNew = result
+                        && !_.isEmpty(result.getText().trim())
+                        && result.getText() !== barcode;
+                    if (isBarcodeNew) {
+                        new Audio("assets/barcode-scanner.mp3").play()
+                            .then(() => {
+                                setBarcode(result.getText());
+                            });
+                    }
+                }
+            );
+        }
+
         return function clean() {
             barcodeReader.reset()
         }
@@ -43,23 +52,33 @@ export default function App() {
     return (
         <Box height="100vh">
             <AppBar position="static">
-                <Box
-                    m={1}
-                >
-                    <Typography variant="h5">
+                <Toolbar>
+                    <Typography variant="h6">
                         Barcode Scanner
                     </Typography>
-                </Box>
+                </Toolbar>
             </AppBar>
             <Box
                 display="grid"
-                gridTemplateRows="1fr 1fr"
+                gridTemplateRows="auto auto auto"
                 gridGap={10}
                 justifyContent="center"
-                alignContent="center"
-                height="100%"
                 p={2}
             >
+                <Box>
+                    {(videoDevices?.length ?? 0) > 0 && selectedVideoDeviceId && <>
+                        <InputLabel id="cameraInputLabel">Camera</InputLabel>
+                        <Select variant="outlined" fullWidth
+                                labelId="cameraInputLabel"
+                                value={selectedVideoDeviceId}
+                                onChange={e => setSelectedVideoDeviceId(e.target.value as string)}>
+                            {videoDevices?.map(device =>
+                                <MenuItem value={device.deviceId} key={device.deviceId}>{device.label}</MenuItem>
+                            )}
+                        </Select>
+                    </>
+                    }
+                </Box>
                 <Box
                     width="80vmin"
                     height="80vmin"
@@ -69,8 +88,11 @@ export default function App() {
                     <video id="scannerVideo" width="100%" height="100%"/>
                 </Box>
                 <Box>
-                    <Typography variant="body1">Barcode</Typography>
-                    <TextField variant="outlined" fullWidth value={barcode} disabled={true}/>
+                    <TextField variant="outlined" fullWidth
+                               label="Barcode"
+                               value={barcode}
+                               disabled={true}
+                    />
                 </Box>
             </Box>
         </Box>
