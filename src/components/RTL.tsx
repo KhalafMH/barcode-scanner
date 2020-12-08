@@ -5,13 +5,13 @@ import {create} from "jss";
 import rtl from "jss-rtl";
 
 const jss = create({plugins: [...jssPreset().plugins, rtl()]});
-const theme = createMuiTheme({
-    direction: "rtl"
-})
 
 export default function RTL(props: any) {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={(theme) => createMuiTheme({
+            ...theme,
+            direction: "rtl"
+        })}>
             <StylesProvider jss={jss}>
                 {props.children}
             </StylesProvider>
