@@ -6,6 +6,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 
 export default function BarcodeScanner() {
     const [barcode, setBarcode] = useState("");
+    const [barcodeReader, setBarcodeReader] = useState<BrowserMultiFormatReader | null>(null);
     const [videoDevices, setVideoDevices] = useState<Array<MediaDeviceInfo>>([]);
     const [selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string | null>(null);
 
@@ -13,23 +14,28 @@ export default function BarcodeScanner() {
 
     useEffect(() => {
         const barcodeReader = new BrowserMultiFormatReader();
-        if (videoDevices.length < 1) {
-            barcodeReader.listVideoInputDevices()
-                .then(videoDevices => {
-                    if (videoDevices.length < 1) {
-                        alert("No camera detected")
-                        return
-                    }
-                    setVideoDevices(videoDevices);
-                    setSelectedVideoDeviceId(videoDevices[videoDevices.length - 1].deviceId)
-                })
-                .catch(reason => {
-                    console.log(`error: ${reason}`);
-                    alert(`error: ${reason}`);
-                });
+        setBarcodeReader(barcodeReader);
+        barcodeReader.listVideoInputDevices()
+            .then(videoDevices => {
+                if (videoDevices.length < 1) {
+                    alert("No camera detected")
+                    return
+                }
+                setVideoDevices(videoDevices);
+                setSelectedVideoDeviceId(videoDevices[videoDevices.length - 1].deviceId)
+            })
+            .catch(reason => {
+                console.log(`error: ${reason}`);
+                alert(`error: ${reason}`);
+            });
+        return function clean() {
+            barcodeReader.reset()
         }
+    }, [])
+
+    useEffect(() => {
         if (selectedVideoDeviceId) {
-            barcodeReader.decodeFromVideoDevice(
+            barcodeReader?.decodeFromVideoDevice(
                 selectedVideoDeviceId,
                 "scannerVideo",
                 result => {
@@ -43,13 +49,12 @@ export default function BarcodeScanner() {
                             });
                     }
                 }
-            );
+            )
+            return () => {
+                barcodeReader?.stopContinuousDecode();
+            }
         }
-
-        return function clean() {
-            barcodeReader.reset()
-        }
-    })
+    }, [selectedVideoDeviceId, barcode, barcodeReader])
 
     return (
         <Box
@@ -62,14 +67,17 @@ export default function BarcodeScanner() {
             <Box>
                 {(videoDevices?.length ?? 0) > 0 && selectedVideoDeviceId && <>
                     <InputLabel id="cameraInputLabel">
-                        <FormattedMessage id="camera"
-                                          defaultMessage="Camera"
+                        <FormattedMessage
+                            id="camera"
+                            defaultMessage="Camera"
                         />
                     </InputLabel>
-                    <Select variant="outlined" fullWidth
-                            labelId="cameraInputLabel"
-                            value={selectedVideoDeviceId}
-                            onChange={e => setSelectedVideoDeviceId(e.target.value as string)}>
+                    <Select
+                        variant="outlined" fullWidth
+                        labelId="cameraInputLabel"
+                        value={selectedVideoDeviceId}
+                        onChange={e => setSelectedVideoDeviceId(e.target.value as string)}
+                    >
                         {videoDevices?.map(device =>
                             <MenuItem value={device.deviceId} key={device.deviceId}>{device.label}</MenuItem>
                         )}
@@ -86,10 +94,11 @@ export default function BarcodeScanner() {
                 <video id="scannerVideo" width="100%" height="100%"/>
             </Box>
             <Box>
-                <TextField variant="outlined" fullWidth
-                           label={intl.formatMessage({id: "barcode", defaultMessage: "Barcode"})}
-                           value={barcode}
-                           disabled={true}
+                <TextField
+                    variant="outlined" fullWidth
+                    label={intl.formatMessage({id: "barcode", defaultMessage: "Barcode"})}
+                    value={barcode}
+                    disabled={true}
                 />
             </Box>
         </Box>
