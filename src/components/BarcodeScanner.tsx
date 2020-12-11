@@ -43,7 +43,7 @@ export default function BarcodeScanner() {
                         && !_.isEmpty(result.getText().trim())
                         && result.getText() !== barcode;
                     if (isBarcodeNew) {
-                        new Audio("assets/barcode-scanner.mp3").play()
+                        new Audio("assets/sounds/barcode-scanner.mp3").play()
                             .then(() => {
                                 setBarcode(result.getText());
                             });
