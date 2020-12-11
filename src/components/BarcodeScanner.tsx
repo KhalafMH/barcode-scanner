@@ -3,10 +3,11 @@ import {Box, FormControl, InputLabel, MenuItem, Select, TextField} from "@materi
 import {BrowserMultiFormatReader} from "@zxing/library";
 import _ from "lodash";
 import {FormattedMessage, useIntl} from "react-intl";
+import {int} from "@zxing/library/es2015/customTypings";
 
 export default function BarcodeScanner() {
     const [barcode, setBarcode] = useState("");
-    const [selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string | null>(null);
+    const [selectedVideoDeviceIndex, setSelectedVideoDeviceIndex] = useState<int | null>(null);
     const barcodeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
     const videoDevicesRef = useRef<Array<MediaDeviceInfo>>([]);
     const videoElementRef = useRef<HTMLVideoElement | null>(null);
@@ -22,7 +23,7 @@ export default function BarcodeScanner() {
                     return
                 }
                 videoDevicesRef.current = videoDevices;
-                setSelectedVideoDeviceId(videoDevices[videoDevices.length - 1].deviceId)
+                setSelectedVideoDeviceIndex(videoDevices.length - 1)
             })
             .catch(reason => {
                 console.log(`error: ${reason}`);
@@ -34,9 +35,9 @@ export default function BarcodeScanner() {
     }, [])
 
     useEffect(() => {
-        if (selectedVideoDeviceId) {
+        if (selectedVideoDeviceIndex != null) {
             barcodeReaderRef.current?.decodeFromVideoDevice(
-                selectedVideoDeviceId,
+                videoDevicesRef.current[selectedVideoDeviceIndex].deviceId,
                 videoElementRef.current,
                 result => {
                     const isBarcodeNew = result
@@ -54,7 +55,7 @@ export default function BarcodeScanner() {
                 barcodeReaderRef.current?.reset();
             }
         }
-    }, [selectedVideoDeviceId, barcode])
+    }, [selectedVideoDeviceIndex, barcode])
 
     return (
         <Box
@@ -64,7 +65,7 @@ export default function BarcodeScanner() {
             p={2}
         >
             <Box>
-                {(videoDevicesRef.current?.length ?? 0) > 0 && selectedVideoDeviceId && <>
+                {(videoDevicesRef.current?.length ?? 0) > 0 && (selectedVideoDeviceIndex != null) && <>
                     <FormControl variant="outlined" fullWidth>
                         <InputLabel>
                             <FormattedMessage
@@ -74,11 +75,11 @@ export default function BarcodeScanner() {
                         </InputLabel>
                         <Select
                             label={intl.formatMessage({id: "camera", defaultMessage: "Camera"})}
-                            value={selectedVideoDeviceId}
-                            onChange={e => setSelectedVideoDeviceId(e.target.value as string)}
+                            value={selectedVideoDeviceIndex}
+                            onChange={e => setSelectedVideoDeviceIndex(e.target.value as int)}
                         >
-                            {videoDevicesRef.current?.map(device =>
-                                <MenuItem value={device.deviceId} key={device.deviceId}>{device.label}</MenuItem>
+                            {videoDevicesRef.current?.map((device, index) =>
+                                <MenuItem value={index} key={device.deviceId}>{device.label}</MenuItem>
                             )}
                         </Select>
                     </FormControl>
