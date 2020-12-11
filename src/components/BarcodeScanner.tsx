@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Box, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
+import {Box, FormControl, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
 import {BrowserMultiFormatReader} from "@zxing/library";
 import _ from "lodash";
 import {FormattedMessage, useIntl} from "react-intl";
@@ -65,22 +65,23 @@ export default function BarcodeScanner() {
         >
             <Box>
                 {(videoDevicesRef.current?.length ?? 0) > 0 && selectedVideoDeviceId && <>
-                    <InputLabel id="cameraInputLabel">
-                        <FormattedMessage
-                            id="camera"
-                            defaultMessage="Camera"
-                        />
-                    </InputLabel>
-                    <Select
-                        variant="outlined" fullWidth
-                        labelId="cameraInputLabel"
-                        value={selectedVideoDeviceId}
-                        onChange={e => setSelectedVideoDeviceId(e.target.value as string)}
-                    >
-                        {videoDevicesRef.current?.map(device =>
-                            <MenuItem value={device.deviceId} key={device.deviceId}>{device.label}</MenuItem>
-                        )}
-                    </Select>
+                    <FormControl variant="outlined" fullWidth>
+                        <InputLabel>
+                            <FormattedMessage
+                                id="camera"
+                                defaultMessage="Camera"
+                            />
+                        </InputLabel>
+                        <Select
+                            label={intl.formatMessage({id: "camera", defaultMessage: "Camera"})}
+                            value={selectedVideoDeviceId}
+                            onChange={e => setSelectedVideoDeviceId(e.target.value as string)}
+                        >
+                            {videoDevicesRef.current?.map(device =>
+                                <MenuItem value={device.deviceId} key={device.deviceId}>{device.label}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
                 </>
                 }
             </Box>
