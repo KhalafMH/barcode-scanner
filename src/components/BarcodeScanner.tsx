@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Box, FormControl, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
+import {Box, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField} from "@material-ui/core";
 import {BrowserMultiFormatReader} from "@zxing/library";
 import _ from "lodash";
 import {FormattedMessage, useIntl} from "react-intl";
 import {int} from "@zxing/library/es2015/customTypings";
+import {FileCopy, OpenInNew} from "@material-ui/icons";
 
 export default function BarcodeScanner() {
     const [barcode, setBarcode] = useState("");
@@ -11,8 +12,17 @@ export default function BarcodeScanner() {
     const barcodeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
     const videoDevicesRef = useRef<Array<MediaDeviceInfo>>([]);
     const videoElementRef = useRef<HTMLVideoElement | null>(null);
+    const barcodeFieldRef = useRef<HTMLInputElement>();
 
     const intl = useIntl();
+
+    let barcodeIsURL = false;
+    try {
+        new URL(barcode)
+        barcodeIsURL = true
+    } catch {
+        // pass
+    }
 
     useEffect(() => {
         barcodeReaderRef.current = new BrowserMultiFormatReader();
@@ -96,10 +106,33 @@ export default function BarcodeScanner() {
             </Box>
             <Box>
                 <TextField
-                    variant="outlined" fullWidth
+                    inputRef={barcodeFieldRef}
+                    variant="outlined"
+                    fullWidth
                     label={intl.formatMessage({id: "barcode", defaultMessage: "Barcode"})}
                     value={barcode}
-                    disabled={true}
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">
+                            <IconButton
+                                disabled={_.isEmpty(barcode)}
+                                onClick={() => {
+                                    console.log("hello")
+                                    console.log(barcodeFieldRef.current)
+                                    barcodeFieldRef.current?.select();
+                                    barcodeFieldRef.current?.setSelectionRange(0, 99999);
+                                    document.execCommand("copy", false, "Hi");
+                                }}
+                            >
+                                <FileCopy/>
+                            </IconButton>
+                            <IconButton
+                                disabled={!barcodeIsURL}
+                                onClick={() => window.open(barcode, "_blank")}
+                            >
+                                <OpenInNew/>
+                            </IconButton>
+                        </InputAdornment>
+                    }}
                 />
             </Box>
         </Box>
