@@ -70,70 +70,78 @@ export default function BarcodeScanner() {
     return (
         <Box
             display="grid"
-            gridGap={10}
-            justifyContent="center"
-            p={2}
+            justifyItems="center"
+            gridTemplateColumns="1fr"
         >
-            <Box>
-                {(videoDevicesRef.current?.length ?? 0) > 0 && (selectedVideoDeviceIndex != null) && <>
-                    <FormControl variant="outlined" fullWidth>
-                        <InputLabel>
-                            <FormattedMessage
-                                id="camera"
-                                defaultMessage="Camera"
-                            />
-                        </InputLabel>
-                        <Select
-                            label={intl.formatMessage({id: "camera", defaultMessage: "Camera"})}
-                            value={selectedVideoDeviceIndex}
-                            onChange={e => setSelectedVideoDeviceIndex(e.target.value as int)}
-                        >
-                            {videoDevicesRef.current?.map((device, index) =>
-                                <MenuItem value={index} key={device.deviceId}>{device.label}</MenuItem>
-                            )}
-                        </Select>
-                    </FormControl>
-                </>
-                }
-            </Box>
             <Box
-                width="80vmin"
-                height="80vmin"
-                border="2px solid black"
-                borderRadius={5}
+                display="grid"
+                gridGap={10}
+                justifyItems="center"
+                gridTemplateColumns="1fr"
+                maxWidth="80vmin"
+                p={2}
             >
-                <video ref={videoElementRef} width="100%" height="100%"/>
-            </Box>
-            <Box>
-                <TextField
-                    inputRef={barcodeFieldRef}
-                    variant="outlined"
-                    fullWidth
-                    label={intl.formatMessage({id: "barcode", defaultMessage: "Barcode"})}
-                    value={barcode}
-                    InputProps={{
-                        endAdornment: <InputAdornment position="end">
-                            <IconButton
-                                disabled={_.isEmpty(barcode)}
-                                onClick={() => {
-                                    console.log("hello")
-                                    console.log(barcodeFieldRef.current)
-                                    barcodeFieldRef.current?.select();
-                                    barcodeFieldRef.current?.setSelectionRange(0, 99999);
-                                    document.execCommand("copy", false, "Hi");
-                                }}
+                <Box width="100%">
+                    {(videoDevicesRef.current?.length ?? 0) > 0 && (selectedVideoDeviceIndex != null) && <>
+                        <FormControl variant="outlined" fullWidth>
+                            <InputLabel>
+                                <FormattedMessage
+                                    id="camera"
+                                    defaultMessage="Camera"
+                                />
+                            </InputLabel>
+                            <Select
+                                label={intl.formatMessage({id: "camera", defaultMessage: "Camera"})}
+                                value={selectedVideoDeviceIndex}
+                                onChange={e => setSelectedVideoDeviceIndex(e.target.value as int)}
                             >
-                                <FileCopy/>
-                            </IconButton>
-                            <IconButton
-                                disabled={!barcodeIsURL}
-                                onClick={() => window.open(barcode, "_blank")}
-                            >
-                                <OpenInNew/>
-                            </IconButton>
-                        </InputAdornment>
-                    }}
-                />
+                                {videoDevicesRef.current?.map((device, index) =>
+                                    <MenuItem value={index} key={device.deviceId}>{device.label}</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
+                    </>
+                    }
+                </Box>
+                <Box
+                    width="80vmin"
+                    height="80vmin"
+                    border="2px solid black"
+                    borderRadius={5}
+                >
+                    <video ref={videoElementRef} width="100%" height="100%"/>
+                </Box>
+                <Box width="100%">
+                    <TextField
+                        inputRef={barcodeFieldRef}
+                        variant="outlined"
+                        fullWidth
+                        label={intl.formatMessage({id: "barcode", defaultMessage: "Barcode"})}
+                        value={barcode}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                    disabled={_.isEmpty(barcode)}
+                                    onClick={() => {
+                                        console.log("hello")
+                                        console.log(barcodeFieldRef.current)
+                                        barcodeFieldRef.current?.select();
+                                        barcodeFieldRef.current?.setSelectionRange(0, 99999);
+                                        document.execCommand("copy", false, "Hi");
+                                    }}
+                                >
+                                    <FileCopy/>
+                                </IconButton>
+                                <IconButton
+                                    disabled={!barcodeIsURL}
+                                    onClick={() => window.open(barcode, "_blank")}
+                                >
+                                    <OpenInNew/>
+                                </IconButton>
+                            </InputAdornment>
+                        }}
+                    />
+                </Box>
             </Box>
         </Box>
     );
