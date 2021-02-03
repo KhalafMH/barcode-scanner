@@ -17,5 +17,9 @@ jobs:
         run: npm run build
       - name: Add CNAME
         run: echo $CNAME > build/CNAME
+      - name: Login to GitHub
+        run: |
+          git config user.name "${{ github.repository_owner }}"
+          git config user.email $GITHUB_ACTOR@users.noreply.github.com
       - name: Deploy site to Github Pages
         run: npx gh-pages -d build
