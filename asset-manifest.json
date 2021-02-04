@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/static/css/main.2ae47eeb.chunk.css",
-    "main.js": "/static/js/main.ea377fda.chunk.js",
-    "main.js.map": "/static/js/main.ea377fda.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.65e6c018.js",
-    "runtime-main.js.map": "/static/js/runtime-main.65e6c018.js.map",
-    "static/js/2.c5837685.chunk.js": "/static/js/2.c5837685.chunk.js",
-    "static/js/2.c5837685.chunk.js.map": "/static/js/2.c5837685.chunk.js.map",
-    "static/js/3.9f594fa6.chunk.js": "/static/js/3.9f594fa6.chunk.js",
-    "static/js/3.9f594fa6.chunk.js.map": "/static/js/3.9f594fa6.chunk.js.map",
+    "main.css": "/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/static/js/main.a741144b.chunk.js",
+    "main.js.map": "/static/js/main.a741144b.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.5d730033.js",
+    "runtime-main.js.map": "/static/js/runtime-main.5d730033.js.map",
+    "static/js/2.a1db2068.chunk.js": "/static/js/2.a1db2068.chunk.js",
+    "static/js/2.a1db2068.chunk.js.map": "/static/js/2.a1db2068.chunk.js.map",
+    "static/js/3.cbde2ec5.chunk.js": "/static/js/3.cbde2ec5.chunk.js",
+    "static/js/3.cbde2ec5.chunk.js.map": "/static/js/3.cbde2ec5.chunk.js.map",
     "index.html": "/index.html",
     "service-worker.js": "/service-worker.js",
     "service-worker.js.map": "/service-worker.js.map",
-    "static/css/main.2ae47eeb.chunk.css.map": "/static/css/main.2ae47eeb.chunk.css.map",
-    "static/js/2.c5837685.chunk.js.LICENSE.txt": "/static/js/2.c5837685.chunk.js.LICENSE.txt",
-    "static/media/saudi_arabia_flag.a9ef3391.svg": "/static/media/saudi_arabia_flag.a9ef3391.svg",
-    "static/media/united_kingdom_flag.d73d602c.svg": "/static/media/united_kingdom_flag.d73d602c.svg"
+    "static/css/main.6dea0f05.chunk.css.map": "/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.a1db2068.chunk.js.LICENSE.txt": "/static/js/2.a1db2068.chunk.js.LICENSE.txt",
+    "static/media/saudi_arabia_flag.abbee64f.svg": "/static/media/saudi_arabia_flag.abbee64f.svg",
+    "static/media/united_kingdom_flag.e072e503.svg": "/static/media/united_kingdom_flag.e072e503.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.65e6c018.js",
-    "static/js/2.c5837685.chunk.js",
-    "static/css/main.2ae47eeb.chunk.css",
-    "static/js/main.ea377fda.chunk.js"
+    "static/js/runtime-main.5d730033.js",
+    "static/js/2.a1db2068.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.a741144b.chunk.js"
   ]
 }
