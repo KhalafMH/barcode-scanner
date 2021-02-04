@@ -19,7 +19,7 @@ jobs:
         run: echo $CNAME > build/CNAME
       - name: Configure Git
         run: |
-          git config user.name "${{ github.repository_owner }}"
-          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git config user.name github-actions
+          git config user.email github-actions@github.com
       - name: Deploy site to Github Pages
         run: npx gh-pages -d build
