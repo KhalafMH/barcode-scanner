@@ -2,6 +2,7 @@ name: Build and Deploy
 on: push
 env:
   CNAME: "barcode-scanner.mahdi.pro"
+  GIT_USER
 jobs:
   build_and_deploy:
     name: Build and deploy
@@ -19,7 +20,8 @@ jobs:
         run: echo $CNAME > build/CNAME
       - name: Configure Git
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
       - name: Deploy site to Github Pages
         run: npx gh-pages -d build
